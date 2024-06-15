@@ -84,7 +84,8 @@ func (v *commonInitialisms) ApplyTo(opts *namingconv.Options) {
 }
 
 type Result struct {
-	Splited []string
+	Original string
+	Splited  []string
 
 	LowerCamelCase string
 	UpperCamelCase string
@@ -110,6 +111,7 @@ func main() {
 	w.SetIndent("", "  ")
 	for _, arg := range flag.Args() {
 		r := Result{
+			Original:       arg,
 			Splited:        namingconv.Split(arg, opts),
 			LowerCamelCase: namingconv.ToLowerCamelCase(arg, opts),
 			UpperCamelCase: namingconv.ToUpperCamelCase(arg, opts),
