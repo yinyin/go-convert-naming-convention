@@ -75,6 +75,8 @@ func (opts *Options) SetExceptionRules(exceptionRules map[string]string) {
 }
 
 // SplitAlphabetNumber enables splitting alphabet and number.
+// In default behavior the digits will be combined with alphabets behind it
+// and upper case alphabets in front of it.
 func (opts *Options) SplitAlphabetNumber() {
 	opts.splitAlphaNum = true
 }
