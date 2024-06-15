@@ -9,6 +9,7 @@ func normalizeCommonInitialism(c string) string {
 	return strings.ToUpper(strings.TrimSpace(c))
 }
 
+// Options can be used to customize the behavior of the naming convention conversion.
 type Options struct {
 	commonInitialisms             map[string]bool
 	usingDefaultCommonInitialisms bool
@@ -18,6 +19,7 @@ type Options struct {
 	splitAlphaNum bool
 }
 
+// NewDefaultOptions creates a new Options with default settings.
 func NewDefaultOptions() *Options {
 	return &Options{
 		commonInitialisms:             defaultCommonInitialisms,
@@ -34,6 +36,7 @@ func (opts *Options) prepareCommonInitialisms() {
 	}
 }
 
+// AddCommonInitialisms adds given initialism into common initialisms list.
 func (opts *Options) AddCommonInitialisms(commonInitialisms ...string) {
 	opts.prepareCommonInitialisms()
 	for _, commonInitial := range commonInitialisms {
@@ -45,11 +48,13 @@ func (opts *Options) AddCommonInitialisms(commonInitialisms ...string) {
 	}
 }
 
+// SetCommonInitialisms sets the common initialisms list.
 func (opts *Options) SetCommonInitialisms(commonInitialisms ...string) {
 	opts.commonInitialisms = nil
 	opts.AddCommonInitialisms(commonInitialisms...)
 }
 
+// RemoveCommonInitialisms removes given initialism from common initialisms list.
 func (opts *Options) RemoveCommonInitialisms(commonInitialisms ...string) {
 	if len(opts.commonInitialisms) == 0 {
 		return
@@ -61,10 +66,15 @@ func (opts *Options) RemoveCommonInitialisms(commonInitialisms ...string) {
 	}
 }
 
+// SetExceptionRules sets the exception rules to override convention of matched words.
+// The key of exceptionRules is the words to match.
+// The value of exceptionRules is the words to replace with.
+// Words to replace must concatnate with `-`, `_` or ` ` as delimiter.
 func (opts *Options) SetExceptionRules(exceptionRules map[string]string) {
 	opts.exceptionRules = maps.Clone(exceptionRules)
 }
 
+// SplitAlphabetNumber enables splitting alphabet and number.
 func (opts *Options) SplitAlphabetNumber() {
 	opts.splitAlphaNum = true
 }

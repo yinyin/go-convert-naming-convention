@@ -18,6 +18,8 @@ func isDelimiter(r rune) bool {
 	return r == '_' || r == '-' || unicode.IsSpace(r) || unicode.IsControl(r)
 }
 
+// appendNamePart appends a word to nameParts, converting it to an initialism if it is one.
+// The word is given by runes[w:i] and must not be an empty string.
 func appendNamePart(nameParts []string, runes []rune, w, i int, commonInitialisms map[string]bool) []string {
 	word := string(runes[w:i])
 	if u := strings.ToUpper(word); commonInitialisms[u] {

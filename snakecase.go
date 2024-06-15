@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+// ToSnakeCase converts the given name to snake_case.
+// Leave opts as nil to use the default options.
 func ToSnakeCase(name string, opts *Options) string {
 	nameParts := Split(name, opts)
 	resultBuf := make([]byte, 0, computeBufferSize(nameParts, true))

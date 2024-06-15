@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+// ToKebebCase converts the given name to kebeb-case.
+// Leave opts as nil to use the default options.
 func ToKebebCase(name string, opts *Options) string {
 	nameParts := Split(name, opts)
 	resultBuf := make([]byte, 0, computeBufferSize(nameParts, true))

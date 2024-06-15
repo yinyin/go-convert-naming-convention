@@ -1,5 +1,7 @@
 package convertnamingconvention
 
+// Split splits the given name into words.
+// For example: "AnApple" is split into []string{"An", "Apple"}.
 func Split(name string, opts *Options) []string {
 	if opts == nil {
 		opts = NewDefaultOptions()
