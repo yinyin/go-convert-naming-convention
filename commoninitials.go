@@ -12,7 +12,7 @@ package convertnamingconvention
 // DefaultCommonInitialisms is a set of common initialisms.
 // Only add entries that are highly unlikely to be non-initialisms.
 // For instance, "ID" is fine (Freudian code is rare), but "AND" is not.
-var DefaultCommonInitialisms = map[string]bool{
+var defaultCommonInitialisms = map[string]bool{
 	"ACL":   true,
 	"API":   true,
 	"ASCII": true,

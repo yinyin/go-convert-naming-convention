@@ -1,10 +1,13 @@
 package convertnamingconvention
 
-func Split(name string, commonInitialisms map[string]bool, exceptionRules map[string]string) []string {
-	nameParts := splitNameWithoutException(name, commonInitialisms)
-	if len(exceptionRules) == 0 {
+func Split(name string, opts *Options) []string {
+	if opts == nil {
+		opts = NewDefaultOptions()
+	}
+	nameParts := splitNameWithoutException(name, opts.commonInitialisms, opts.splitAlphaNum)
+	if len(opts.exceptionRules) == 0 {
 		return nameParts
 	}
-	exceptRules := toExceptRules(exceptionRules, commonInitialisms)
+	exceptRules := toExceptRules(opts.exceptionRules, opts.commonInitialisms, opts.splitAlphaNum)
 	return applyExceptRules(nameParts, exceptRules)
 }

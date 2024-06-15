@@ -65,7 +65,7 @@ func splitNameWithDelimiter(name string, commonInitialisms map[string]bool) (nam
 
 }
 
-func splitNameWithoutException(name string, commonInitialisms map[string]bool) (nameParts []string) {
+func splitNameWithoutException(name string, commonInitialisms map[string]bool, splitAlphaNum bool) (nameParts []string) {
 	// Fast path for simple cases: "_" and all lowercase.
 	if name == "_" {
 		return []string{name}
@@ -96,6 +96,10 @@ func splitNameWithoutException(name string, commonInitialisms map[string]bool) (
 			eow = true
 		} else if unicode.IsLower(runes[i]) && !unicode.IsLower(runes[i+1]) {
 			// lower->non-lower
+			eow = true
+		} else if splitAlphaNum && ((unicode.IsLetter(runes[i]) && unicode.IsDigit(runes[i+1])) ||
+			(unicode.IsDigit(runes[i]) && unicode.IsLetter(runes[i+1]))) {
+			// alphabet->digit or digit->alphabet
 			eow = true
 		}
 		i++

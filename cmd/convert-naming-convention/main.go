@@ -38,6 +38,13 @@ func (v *exceptRules) Set(s string) error {
 	return nil
 }
 
+func (v *exceptRules) ApplyTo(opts *namingconv.Options) {
+	if v.rules == nil {
+		return
+	}
+	opts.SetExceptionRules(v.rules)
+}
+
 type commonInitialisms struct {
 	initialisms map[string]bool
 }
@@ -53,23 +60,27 @@ func (v commonInitialisms) String() string {
 func (v *commonInitialisms) Set(s string) error {
 	if v.initialisms == nil {
 		v.initialisms = make(map[string]bool)
-		for k := range namingconv.DefaultCommonInitialisms {
-			v.initialisms[k] = true
-		}
 	}
 	parts := strings.Split(s, ",")
 	for _, part := range parts {
-		part = strings.ToUpper(part)
+		part = strings.ToUpper(strings.TrimSpace(part))
+		if part == "" {
+			continue
+		}
 		v.initialisms[part] = true
 	}
 	return nil
 }
 
-func (v *commonInitialisms) Get() map[string]bool {
-	if len(v.initialisms) == 0 {
-		return namingconv.DefaultCommonInitialisms
+func (v *commonInitialisms) ApplyTo(opts *namingconv.Options) {
+	if v.initialisms == nil {
+		return
 	}
-	return v.initialisms
+	initials := make([]string, 0, len(v.initialisms))
+	for k := range v.initialisms {
+		initials = append(initials, k)
+	}
+	opts.AddCommonInitialisms(initials...)
 }
 
 type Result struct {
@@ -84,18 +95,26 @@ type Result struct {
 func main() {
 	var commonInitialisms commonInitialisms
 	var exceptRules exceptRules
+	var splitAlphaNum bool
 	flag.Var(&commonInitialisms, "initial", "common initialisms")
 	flag.Var(&exceptRules, "except", "exception rules")
+	flag.BoolVar(&splitAlphaNum, "splitAlphaNum", false, "split alphabets and numbers")
 	flag.Parse()
+	opts := namingconv.NewDefaultOptions()
+	commonInitialisms.ApplyTo(opts)
+	exceptRules.ApplyTo(opts)
+	if splitAlphaNum {
+		opts.SplitAlphabetNumber()
+	}
 	w := json.NewEncoder(os.Stdout)
 	w.SetIndent("", "  ")
 	for _, arg := range flag.Args() {
 		r := Result{
-			Splited:        namingconv.Split(arg, commonInitialisms.Get(), exceptRules.rules),
-			LowerCamelCase: namingconv.ToLowerCamelCase(arg, commonInitialisms.Get(), exceptRules.rules),
-			UpperCamelCase: namingconv.ToUpperCamelCase(arg, commonInitialisms.Get(), exceptRules.rules),
-			SnakeCase:      namingconv.ToSnakeCase(arg, commonInitialisms.Get(), exceptRules.rules),
-			KebebCase:      namingconv.ToKebebCase(arg, commonInitialisms.Get(), exceptRules.rules),
+			Splited:        namingconv.Split(arg, opts),
+			LowerCamelCase: namingconv.ToLowerCamelCase(arg, opts),
+			UpperCamelCase: namingconv.ToUpperCamelCase(arg, opts),
+			SnakeCase:      namingconv.ToSnakeCase(arg, opts),
+			KebebCase:      namingconv.ToKebebCase(arg, opts),
 		}
 		if err := w.Encode(r); nil != err {
 			log.Fatalf("failed on encode result for [%s]: %v", arg, err)

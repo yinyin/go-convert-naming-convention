@@ -4,8 +4,8 @@ import (
 	"strings"
 )
 
-func ToLowerCamelCase(name string, commonInitialisms map[string]bool, exceptionRules map[string]string) string {
-	nameParts := Split(name, commonInitialisms, exceptionRules)
+func ToLowerCamelCase(name string, opts *Options) string {
+	nameParts := Split(name, opts)
 	resultBuf := make([]byte, 0, computeBufferSize(nameParts, false))
 	for i, part := range nameParts {
 		if i == 0 {
@@ -16,8 +16,8 @@ func ToLowerCamelCase(name string, commonInitialisms map[string]bool, exceptionR
 	return string(resultBuf)
 }
 
-func ToUpperCamelCase(name string, commonInitialisms map[string]bool, exceptionRules map[string]string) string {
-	nameParts := Split(name, commonInitialisms, exceptionRules)
+func ToUpperCamelCase(name string, opts *Options) string {
+	nameParts := Split(name, opts)
 	resultBuf := make([]byte, 0, computeBufferSize(nameParts, false))
 	for _, part := range nameParts {
 		resultBuf = append(resultBuf, []byte(part)...)

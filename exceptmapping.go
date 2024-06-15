@@ -9,10 +9,10 @@ type exceptRule struct {
 	replaceWith []string
 }
 
-func toExceptRules(rawRule map[string]string, commonInitialisms map[string]bool) (exceptRules []exceptRule) {
+func toExceptRules(rawRule map[string]string, commonInitialisms map[string]bool, splitAlphaNum bool) (exceptRules []exceptRule) {
 	for toMatch, replaceWith := range rawRule {
 		exceptRules = append(exceptRules, exceptRule{
-			toMatch:     splitNameWithoutException(toMatch, commonInitialisms),
+			toMatch:     splitNameWithoutException(toMatch, commonInitialisms, splitAlphaNum),
 			replaceWith: splitNameWithDelimiter(replaceWith, commonInitialisms),
 		})
 	}
